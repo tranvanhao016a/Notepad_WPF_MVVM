@@ -11,21 +11,15 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Microsoft.SqlServer.Server;
-using WPFNotepad.Models;
+
 namespace WPFNotepad
 {
     /// <summary>
-    /// Interaction logic for FontDialog.xaml
+    /// Interaction logic for Notepad.xaml
     /// </summary>
-    public partial class FontDialog 
+    public partial class Notepad : Window
     {
-        public FormatModel Format { get; set; }
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-           this.Close();
-        }
-        public FontDialog()
+        public Notepad()
         {
             InitializeComponent();
         }

@@ -24,5 +24,6 @@ namespace WPFNotepad
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
     }
 }

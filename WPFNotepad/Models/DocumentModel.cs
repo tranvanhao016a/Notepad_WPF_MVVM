@@ -1,47 +1,59 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace WPFNotepad.Models
 {
-    /// <summary>
-    /// Model for the text editor document.
-    /// </summary>
-    public class DocumentModel : ObservableObject
+    public class DocumentModel : INotifyPropertyChanged
     {
         private string _text;
         public string Text
         {
             get { return _text; }
-            set { OnPropertyChanged(ref _text, value); }
+            set
+            {
+                if (_text != value)
+                {
+                    _text = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private string _filePath;
         public string FilePath
         {
             get { return _filePath; }
-            set { OnPropertyChanged(ref _filePath, value); }
+            set
+            {
+                if (_filePath != value)
+                {
+                    _filePath = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private string _fileName;
         public string FileName
         {
             get { return _fileName; }
-            set { OnPropertyChanged(ref _fileName, value); }
+            set
+            {
+                if (_fileName != value)
+                {
+                    _fileName = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
-        public bool isEmpty
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(FileName) ||
-                    string.IsNullOrEmpty(FilePath))
-                    return true;
+        public bool isEmpty => string.IsNullOrEmpty(_text);
 
-                return false;
-            }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

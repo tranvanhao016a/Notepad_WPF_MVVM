@@ -1,0 +1,144 @@
+﻿<ui:FluentWindow x:Class="WPFNotepad.NotepadWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFNotepad"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        xmlns:viewmodels="clr-namespace:WPFNotepad.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:EditorViewModel}"
+                 mc:Ignorable="d"
+        Title="NotepadWindow" Width="1250" Height="652"
+        d:DesignHeight="650" d:DesignWidth="900"
+        ExtendsContentIntoTitleBar="True"
+        WindowBackdropType="Tabbed"
+        WindowCornerPreference="Default"
+        WindowStartupLocation="CenterOwner">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="156*"/>
+            <RowDefinition Height="161*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.RowSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <ui:TitleBar
+                Title="WPF UI - Editor"
+                Grid.Row="0"
+                Icon="pack://application:,,,/Assets/wpfui.png" />
+
+            <Menu
+                Grid.Row="1"
+                Background="Transparent"
+                FontSize="14">
+                <ui:MenuItem Header="File" DataContext="{Binding File}" Icon="{ui:SymbolIcon DocumentSplitHint20}">
+                    <MenuItem Command="{Binding NewCommand}" CommandParameter="newFile" Header="New" />
+                    <MenuItem Command="{Binding OpenNewWindows}" CommandParameter="newWindow" Header="New window" />
+                    <MenuItem Command="{Binding OpenCommand}" CommandParameter="openFile" Header="Open..." />
+                    <MenuItem Command="{Binding SaveCommand}" CommandParameter="saveFile" Header="Save" />
+                    <MenuItem Command="{Binding SaveAsCommand}" CommandParameter="saveFileAs" Header="Save As..." />
+                    <Separator />
+                    <MenuItem Command="{Binding ExitCommand}" CommandParameter="exit" Header="Exit" />
+                </ui:MenuItem>
+                <ui:MenuItem Header="Edit" Icon="{ui:SymbolIcon DocumentEdit20}" DataContext="{Binding Editor}">
+                    <MenuItem Command="{Binding UndoCommand}" CommandParameter="editUndo" Header="Undo" />
+                    <Separator />
+                    <MenuItem Command="{Binding CutCommand}" CommandParameter="editCut" Header="Cut" />
+                    <MenuItem Command="{Binding CopyCommand}" CommandParameter="editCopy" Header="Copy" />
+                    <MenuItem Command="{Binding PasteCommand}" CommandParameter="editPaste" Header="Paste" />
+                    <MenuItem Command="{Binding ViewModel.StatusBarActionCommand, Mode=OneWay}" CommandParameter="editDelete" Header="Delete" IsEnabled="False" />
+                    <Separator />
+                    <MenuItem Command="{Binding ViewModel.StatusBarActionCommand, Mode=OneWay}" CommandParameter="browserSearch" Header="Search with browser" />
+                    <MenuItem Command="{Binding ViewModel.StatusBarActionCommand, Mode=OneWay}" CommandParameter="find" Header="Find..." />
+                    <MenuItem Command="{Binding ViewModel.StatusBarActionCommand, Mode=OneWay}" CommandParameter="findNext" Header="Find next" />
+                    <Separator />
+                    <MenuItem Command="{Binding ViewModel.StatusBarActionCommand, Mode=OneWay}" CommandParameter="selectAll" Header="Select All" />
+                </ui:MenuItem>
+                <Separator />
+                <ui:MenuItem Command="{Binding BoldCommand, Mode=OneWay}" CommandParameter="textBold" Icon="{ui:SymbolIcon TextBold20}" />
+                <ui:MenuItem Command="{Binding ItalicCommand}" CommandParameter="textItalic" Icon="{ui:SymbolIcon TextItalic20}" />
+                <ui:MenuItem Command="{Binding UnderlineCommand}" CommandParameter="textUnderline" Icon="{ui:SymbolIcon TextUnderline20}" />
+                <Separator />
+               
+               
+                <Separator />
+                <ui:MenuItem Header="View" Icon="{ui:SymbolIcon CalendarWeekStart24}" DataContext="{Binding Editor}">
+                    <MenuItem Header="Zoom">
+                        <MenuItem InputGestureText="Ctrl+&quot;+&quot;" Command="{Binding ZoomInCommand}" CommandParameter="zoomIn" Header="Zoom in" />
+                        <MenuItem InputGestureText="Ctrl+&quot;-&quot;" Command="{Binding ZoomOutCommand}" CommandParameter="zoomOut" Header="Zoom out" />
+                        <MenuItem InputGestureText="Ctrl+0" Command="{Binding RestoreZoomCommand}" CommandParameter="zoomRestore" Header="Restore default zoom" />
+                    </MenuItem>
+                </ui:MenuItem>
+                <Separator />
+                
+                <ui:MenuItem Header="Format Word" DataContext="{Binding Editor}" Icon="{ui:SymbolIcon TextFont20}">
+                    <ui:MenuItem Header="Font Family">
+                        <ListBox x:Name="lstFontFamily" Width="250" SelectionChanged="lstFontFamily_SelectionChanged"
+                                 ItemsSource="{Binding Source={StaticResource FontFamilyOptions}}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" FontFamily="{Binding}"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </ui:MenuItem>
+                    <ui:MenuItem Header="Font Size">
+                        <ListBox x:Name="lstFontSize" Width="80" SelectionChanged="lstFontSize_SelectionChanged"
+                                 ItemsSource="{Binding Source={StaticResource FontSizeOptions}}"/>
+                    </ui:MenuItem>
+                </ui:MenuItem>
+                <ui:MenuItem Header="Help" DataContext="{Binding Help}" Icon="{ui:SymbolIcon ChatHelp20}">
+                    <MenuItem Command="{Binding HelpCommand}" CommandParameter="viewHelp" Header="View help" />
+                    <MenuItem Command="{Binding ViewModel.StatusBarActionCommand, Mode=OneWay}" CommandParameter="viewFeedback" Header="Send feedback" />
+                    <Separator />
+                    <MenuItem Command="{Binding ViewModel.StatusBarActionCommand, Mode=OneWay}" CommandParameter="viewAbout" Header="About WPF UI" />
+                </ui:MenuItem>
+            </Menu>
+
+            <RichTextBox x:Name="RootRichTextBox"
+                         Grid.Row="2"
+                         Padding="0,6"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         VerticalScrollBarVisibility="Visible" />
+
+            <StatusBar x:Name="RootStatusBar" Grid.Row="3">
+                <StatusBar.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+                    </ItemsPanelTemplate>
+                </StatusBar.ItemsPanel>
+                <StatusBarItem>
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <MultiBinding Mode="OneWay" StringFormat="{}Line: {0}, Char: {1}">
+                                <Binding Path="Line" />
+                                <Binding Path="Character" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </StatusBarItem>
+                <Separator Grid.Column="1" />
+                <StatusBarItem Grid.Column="2">
+                    <TextBlock Text="{Binding FilePath}" DataContext="{Binding File.Document}" />
+                </StatusBarItem>
+                <Separator Grid.Column="3" />
+                <StatusBarItem Grid.Column="4">
+                    <ProgressBar Width="90" Value="{Binding ViewModel.Progress, Mode=OneWay}" />
+                </StatusBarItem>
+            </StatusBar>
+        </Grid>
+    </Grid>
+</ui:FluentWindow>
